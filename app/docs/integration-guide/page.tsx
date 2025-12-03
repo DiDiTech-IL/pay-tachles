@@ -212,10 +212,10 @@ export default function IntegrationGuidePage() {
               ← Back
             </Link>
             <Link
-              href="/dashboard"
+              href="/demo"
               className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
             >
-              Dashboard
+              Live Demo
             </Link>
           </div>
         </div>
@@ -1027,8 +1027,8 @@ const createPayup = (params: CreatePayupParams) =>
             <Link href="/docs" className="text-sm text-stone-500 hover:text-stone-900">
               ← Back to Documentation
             </Link>
-            <Link href="/dashboard" className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
-              Go to Dashboard →
+            <Link href="/demo" className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
+              View Live Demo →
             </Link>
           </div>
         </main>

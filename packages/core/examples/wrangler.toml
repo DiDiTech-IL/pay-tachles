@@ -1,0 +1,15 @@
+name = "tachles-api"
+main = "src/worker.ts"
+compatibility_date = "2024-01-01"
+
+# KV Namespace for storage (optional)
+[[kv_namespaces]]
+binding = "TACHLES_KV"
+id = "your-kv-namespace-id"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+
+# For local development, create .dev.vars file:
+# ENVIRONMENT = "development"

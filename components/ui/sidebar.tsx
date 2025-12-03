@@ -34,7 +34,7 @@ export function Sidebar({ items, activeItem, onItemClick, isOpen = true, onClose
             }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
               activeItem === item.id
-                ? 'bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-white border border-indigo-500/20'
+                ? 'bg-linear-to-r from-indigo-500/10 to-purple-500/10 text-white border border-indigo-500/20'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >

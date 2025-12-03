@@ -1,0 +1,109 @@
+{
+  "name": "@tachles/core",
+  "version": "0.1.0",
+  "description": "Self-hostable, unopinionated payment management infrastructure",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/react.js",
+      "types": "./dist/react.d.ts"
+    },
+    "./stats": {
+      "import": "./dist/stats/index.js",
+      "types": "./dist/stats/index.d.ts"
+    },
+    "./operations": {
+      "import": "./dist/operations/index.js",
+      "types": "./dist/operations/index.d.ts"
+    },
+    "./hooks": {
+      "import": "./dist/hooks/index.js",
+      "types": "./dist/hooks/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server.js",
+      "types": "./dist/server.d.ts"
+    },
+    "./adapters/cloudflare": {
+      "import": "./dist/adapters/cloudflare.js",
+      "types": "./dist/adapters/cloudflare.d.ts"
+    },
+    "./adapters/node": {
+      "import": "./dist/adapters/node.js",
+      "types": "./dist/adapters/node.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client/index.js",
+      "types": "./dist/client/index.d.ts"
+    },
+    "./db-hooks": {
+      "import": "./dist/db-hooks/index.js",
+      "types": "./dist/db-hooks/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "effect": "^3.19.6"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251126.0",
+    "@types/node": "^20",
+    "tsup": "^8.0.0",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "@upstash/redis": "^1.35.0",
+    "react": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@upstash/redis": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "payments",
+    "payment-gateway",
+    "webhooks",
+    "self-hosted",
+    "cloudflare-workers",
+    "serverless",
+    "effect-ts"
+  ],
+  "author": "DiDiTech-IL",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DiDiTech-IL/pay-tachles"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

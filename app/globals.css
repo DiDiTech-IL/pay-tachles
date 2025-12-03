@@ -320,3 +320,24 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
+
+/* Pulse once animation */
+@keyframes pulse-once {
+  0% { 
+    background-color: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+  }
+  100% { 
+    background-color: transparent;
+    border-color: rgba(51, 65, 85, 0.5);
+  }
+}
+
+.animate-pulse-once {
+  animation: pulse-once 1s ease-out forwards;
+}
+
+/* Tabular numbers for counters */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

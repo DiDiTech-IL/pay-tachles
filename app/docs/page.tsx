@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Logo } from "../components/ui/logo";
+import { Logo } from "../../components/ui/logo";
 
 // ============================================================================
 // Code Block with Copy
@@ -154,16 +154,17 @@ export default function DocsPage() {
             </div>
             <div className="flex items-center gap-4">
               <Link
-                href="/dashboard"
+                href="/demo"
                 className="hidden sm:flex text-sm text-slate-400 hover:text-white transition-colors"
               >
-                Dashboard
+                Live Demo
               </Link>
               <Link
-                href="/login"
+                href="https://github.com/DiDiTech-IL/pay-tachles"
+                target="_blank"
                 className="px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors"
               >
-                Get Started
+                GitHub
               </Link>
               <button
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
@@ -600,8 +601,8 @@ app.post('/webhooks/tachles', (req, res) => {
                   </a>
                 </p>
                 <div className="flex items-center gap-4">
-                  <Link href="/dashboard" className="text-sm text-slate-400 hover:text-white transition-colors">
-                    Dashboard
+                  <Link href="/demo" className="text-sm text-slate-400 hover:text-white transition-colors">
+                    Live Demo
                   </Link>
                   <Link href="/" className="text-sm text-slate-400 hover:text-white transition-colors">
                     Home
