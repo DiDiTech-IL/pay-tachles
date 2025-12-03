@@ -1,0 +1,21 @@
+name = "tachles-pay-webhook-dispatcher"
+main = "consumer.ts"
+compatibility_date = "2024-01-01"
+
+# Queue configuration
+[[queues.consumers]]
+queue = "tachles-pay-webhooks"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 5
+dead_letter_queue = "tachles-pay-webhooks-dlq"
+
+[[queues.producers]]
+queue = "tachles-pay-webhooks"
+binding = "WEBHOOK_QUEUE"
+
+# Environment variables (set via wrangler secret)
+# wrangler secret put SECRET_NAME
+
+[vars]
+ENVIRONMENT = "production"

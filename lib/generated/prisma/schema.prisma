@@ -1,0 +1,160 @@
+// Tachles Pay - Self-Hosted Payment Hub Schema
+// This schema is designed for single-tenant self-hosted deployments
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =============================================================================
+// Payment Provider Apps (Stripe, PayPal, etc.)
+// =============================================================================
+
+model App {
+  id             String   @id @default(uuid())
+  name           String
+  provider       String // stripe, paypal, square, etc.
+  api_key        String   @unique
+  webhook_secret String
+  webhook_url    String // URL to receive webhooks from this provider
+  is_active      Boolean  @default(true)
+  metadata       Json? // Provider-specific config
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  payups            Payup[]
+  transactions      Transaction[]
+  webhook_logs      WebhookLog[]
+  webhook_templates WebhookTemplate[]
+
+  @@map("apps")
+}
+
+// =============================================================================
+// Payup - Temporary payment intent awaiting webhook confirmation
+// A payup is created when a user is forwarded to the payment page.
+// It holds user identifiers and metadata until the provider webhook confirms payment.
+// =============================================================================
+
+model Payup {
+  id             String    @id @default(uuid())
+  app_id         String
+  amount         Int // Amount in smallest currency unit (cents)
+  currency       String    @default("USD")
+  status         String    @default("pending") // pending, processing, completed, failed, cancelled, expired
+  customer_email String?
+  customer_name  String?
+  customer_id    String? // External customer identifier from your system
+  description    String?
+  return_url     String? // URL to redirect after payment
+  cancel_url     String? // URL to redirect on cancellation
+  metadata       Json? // User-defined data to link back to your system
+  provider_data  Json? // Data from the payment provider
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+  expires_at     DateTime // When this payup expires
+  completed_at   DateTime?
+
+  app         App          @relation(fields: [app_id], references: [id], onDelete: Cascade)
+  transaction Transaction? // Created when webhook confirms payment
+
+  @@index([app_id])
+  @@index([status])
+  @@index([customer_id])
+  @@index([expires_at])
+  @@map("payups")
+}
+
+// =============================================================================
+// Transaction - Permanent record after webhook confirmation
+// Created when a payup is finalized via webhook from the payment provider.
+// =============================================================================
+
+model Transaction {
+  id             String   @id @default(uuid())
+  app_id         String
+  payup_id       String   @unique
+  external_id    String? // Provider's transaction/payment ID
+  amount         Int // Final amount charged
+  currency       String   @default("USD")
+  status         String // completed, failed, refunded, disputed
+  customer_email String?
+  customer_name  String?
+  customer_id    String? // External customer identifier
+  description    String?
+  metadata       Json? // Copied from payup + provider response data
+  failure_reason String?
+  provider_data  Json? // Full response from provider
+  fees           Int? // Provider fees in smallest currency unit
+  net_amount     Int? // Amount after fees
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  app          App          @relation(fields: [app_id], references: [id], onDelete: Cascade)
+  payup        Payup        @relation(fields: [payup_id], references: [id], onDelete: Cascade)
+  webhook_logs WebhookLog[]
+
+  @@index([app_id])
+  @@index([external_id])
+  @@index([status])
+  @@index([customer_id])
+  @@map("transactions")
+}
+
+// =============================================================================
+// Webhook Templates - Customizable response formats for webhook events
+// Users can define presets or customize the format sent to their endpoint.
+// =============================================================================
+
+model WebhookTemplate {
+  id         String   @id @default(uuid())
+  app_id     String
+  name       String // Template name (e.g., "default", "minimal", "full")
+  event_type String // Which event this template applies to
+  is_default Boolean  @default(false) // Whether this is the default for the event type
+  format     Json // Template format with placeholders
+  headers    Json? // Custom headers to include
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  app App @relation(fields: [app_id], references: [id], onDelete: Cascade)
+
+  @@unique([app_id, name, event_type])
+  @@index([app_id])
+  @@index([event_type])
+  @@map("webhook_templates")
+}
+
+// =============================================================================
+// Webhook Event Logs
+// =============================================================================
+
+model WebhookLog {
+  id             String    @id @default(uuid())
+  app_id         String
+  transaction_id String?
+  event_type     String // payup.created, payment.completed, payment.failed, etc.
+  direction      String // inbound (from provider) or outbound (to your endpoint)
+  payload        Json // The webhook payload sent/received
+  headers        Json? // HTTP headers
+  status_code    Int? // HTTP response status code
+  response_body  String? // Response received
+  error_message  String? // Error if failed
+  retry_count    Int       @default(0)
+  next_retry_at  DateTime?
+  processed_at   DateTime  @default(now())
+  latency_ms     Int?
+
+  app         App          @relation(fields: [app_id], references: [id], onDelete: Cascade)
+  transaction Transaction? @relation(fields: [transaction_id], references: [id], onDelete: SetNull)
+
+  @@index([app_id])
+  @@index([transaction_id])
+  @@index([event_type])
+  @@index([processed_at])
+  @@map("webhook_logs")
+}
